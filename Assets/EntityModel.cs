@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RPG_Template
 {
-    [CreateAssetMenu(fileName = "StatBuff", menuName = "Scriptable Objects/EntityModel")]
+    [CreateAssetMenu(fileName = "NewEntityModel", menuName = "Scriptable Objects/EntityModel")]
     public class EntityModel : ScriptableObject
     {
         public new string name;

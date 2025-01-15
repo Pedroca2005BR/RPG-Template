@@ -11,7 +11,7 @@ namespace RPG_Template
         public bool isMultiplier;
         public float duration;
 
-        public override void ActivateEffect(List<object> targets)
+        public override void ActivateEffect(object target)
         {
             throw new System.NotImplementedException();
         }

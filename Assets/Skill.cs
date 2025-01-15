@@ -14,7 +14,7 @@ namespace RPG_Template
         public bool isPassive;
         public TimeEvents timeOfActivation;
 
-        public void ActivateSkill(List<object> targets)
+        public void ActivateSkill(object target)
         {
 
         }
