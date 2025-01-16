@@ -4,11 +4,16 @@ using UnityEngine;
 
 namespace RPG_Template
 {
-    public abstract class StatusCondition : ScriptableObject
+    [CreateAssetMenu(fileName = "StatusCondition", menuName = "Scriptable Objects/Status Condition/Buff Status Condition")]
+    public class StatusCondition : ScriptableObject
     {
         public new string name;
         public float duration;
+        public StatBuff buff;   // can be null
 
-        public abstract void ActivateEffect(object target);
+        public virtual void ActivateEffect(object target)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RPG_Template
 {
-    [CreateAssetMenu(fileName = "DOTStatusCondition", menuName = "Scriptable Objects/Status Condition/DOTStatusCondition")]
+    [CreateAssetMenu(fileName = "DOTStatusCondition", menuName = "Scriptable Objects/Status Condition/DOT Status Condition")]
     public class DOTStatusCondition : StatusCondition
     {
         public float damageAmount;
@@ -10,6 +10,8 @@ namespace RPG_Template
 
         public override void ActivateEffect(object target)
         {
+            base.ActivateEffect(target);
+
             throw new System.NotImplementedException();
         }
     }

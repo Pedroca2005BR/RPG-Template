@@ -3,10 +3,11 @@ using UnityEngine;
 
 namespace RPG_Template
 {
-    [CreateAssetMenu(fileName = "NewApplyStatus", menuName = "Scriptable Objects/Special Effects/ApplyStatus")]
+    [CreateAssetMenu(fileName = "NewApplyStatus", menuName = "Scriptable Objects/Special Effects/Apply Status")]
     public class ApplyStatus : SpecialEffect
     {
         // Apply Status is used as an Special Effect to apply a status effect on a target
+        public StatusCondition condition;
 
         public override void ActivateEffect(object target)
         {
