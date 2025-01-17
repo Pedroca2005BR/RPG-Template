@@ -4,6 +4,12 @@ namespace RPG_Template
 {
     public class HealthSystem : BasePointSystem
     {
+        public HealthSystem(float maxHealth)
+        {
+            ChangeMaxPoints(maxHealth);
+            ChangeCurrentPoints(maxHealth);
+        }
+
         public void Heal(float amount)
         {
             if (amount < 0)

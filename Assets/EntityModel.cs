@@ -12,6 +12,7 @@ namespace RPG_Template
         public List<float> values;
 
         [Header("Skills")]
-        public List<Skill> skills;
+        public List<PassiveSkill> passiveSkills;
+        public List<ActiveSkill> activeSkills;
     }
 }

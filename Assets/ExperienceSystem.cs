@@ -6,13 +6,19 @@ namespace RPG_Template
     public class ExperienceSystem: BasePointSystem
     {
         public int currentLevel {  get; private set; }
-        public int maxLevel { get; private set; }
+        public int maxLevel { get; private set; } = 100;
         public bool canLevelUp { get; private set; }
 
         public ExperienceSystem(int currentLevel, int maxLevel)
         {
             this.currentLevel = currentLevel;
             this.maxLevel = maxLevel;
+            this.canLevelUp = true;
+        }
+
+        public ExperienceSystem(int currentLevel)
+        {
+            this.currentLevel = currentLevel;
             this.canLevelUp = true;
         }
 
@@ -30,7 +36,7 @@ namespace RPG_Template
             {
                 if (currentLevel == maxLevel)
                 {
-                    canLevelUp = false;
+                    BlockExpGain();
                     return;
                 }
 

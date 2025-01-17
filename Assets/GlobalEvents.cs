@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace RPG_Template
 {
-    public enum TimeEvents
+    public enum GlobalEvents
     {
         StartOfBattle,
         EndOfBattle,
