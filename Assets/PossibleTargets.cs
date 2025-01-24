@@ -4,12 +4,19 @@ namespace RPG_Template
 {
     public enum PossibleTargets
     {
-        Anyone,
-        Oneself,
+        Caster,
+        AlliesExceptCaster,
         Allies,
         Enemies,
         Everyone,
         EveryoneElse
     }
 
+    public enum NumberOfTargets
+    {
+        One,
+        Two,
+        Three,
+        All
+    }
 }

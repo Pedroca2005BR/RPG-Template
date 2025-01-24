@@ -9,10 +9,13 @@ namespace RPG_Template
         public new string name;
 
         [Header("Stats")]
-        public List<float> values;
+        public List<float> statValues;
 
         [Header("Skills")]
         public List<PassiveSkill> passiveSkills;
         public List<ActiveSkill> activeSkills;
+
+        [Header("Resistances")]
+        public List<float> resistanceValues;
     }
 }

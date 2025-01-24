@@ -6,11 +6,12 @@ namespace RPG_Template
     public abstract class BaseSkill : ScriptableObject
     {
         public new string name;
-        public List<DamageTypes> types;
         public List<SpecialEffect> specialEffects;
-        public Stats statUsed;
 
-        public abstract void ActivateSkill(object target);
+        public PossibleTargets possibleTargets;
+        public NumberOfTargets numberOfTargets;
+
+        //public abstract void ActivateSkill(object target);
     }
 
 }

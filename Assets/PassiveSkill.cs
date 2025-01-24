@@ -10,10 +10,10 @@ namespace RPG_Template
     {
         public List<GlobalEvents> triggers;
 
-        public override void ActivateSkill(object target)
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void ActivateSkill(object target)
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 
 }

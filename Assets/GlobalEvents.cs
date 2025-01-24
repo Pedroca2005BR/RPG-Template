@@ -9,7 +9,8 @@ namespace RPG_Template
         StartOfTurn,
         EndOfTurn,
         Attacking,
-        Defending
+        Defending,
+        EntityDied
     }
 
 }
