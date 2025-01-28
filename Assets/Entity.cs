@@ -9,23 +9,22 @@ namespace RPG_Template
 		[SerializeField] private EntityModel model;
 
 		new string name;
-		List<Stat> statList;
+		public List<Stat> statList {  get; private set; } = new List<Stat>();
 		List<PassiveSkill> passiveSkills;
 		List<ActiveSkill> activeSkills;
-		List<TypeResistance> typeResistances;
+		public List<TypeResistance> typeResistances {  get; private set; } = new List<TypeResistance> { };
 
 		[Header("Health System")]
 		[SerializeField] private float maxHealth;
 
-		HealthSystem healthSystem;
+		public HealthSystem healthSystem { get; private set; }
 
 		[Header("Experience System")]
 		[SerializeField] private int currentLevel;
 
-		ExperienceSystem experienceSystem;
+		public ExperienceSystem experienceSystem { get; private set; }
 
-
-		// locked information
+		public List<StatusCondition> statusConditions { get; private set; }
 		public int side {  get; private set; }
 
 		public void Setup()
@@ -50,8 +49,6 @@ namespace RPG_Template
                 typeResistances.Add(resistance);
             }
         }
-
-		
 
 		public List<PassiveSkill> GetIntruders(Entity entity, GlobalEvents classification)
 		{
@@ -107,5 +104,7 @@ namespace RPG_Template
 
 			return intruders;
 		}
+
+		
 	}
 }

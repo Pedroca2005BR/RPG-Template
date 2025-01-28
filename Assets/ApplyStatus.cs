@@ -10,7 +10,7 @@ namespace RPG_Template
         public StatusCondition condition;
         public float chance; // from 1 to 100
 
-        public override void ActivateEffect(object target)
+        public override void ActivateEffect(object target, object checkCondition)
         {
             throw new System.NotImplementedException();
         }

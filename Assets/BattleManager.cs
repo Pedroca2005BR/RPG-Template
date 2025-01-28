@@ -5,19 +5,18 @@ using UnityEngine;
 
 using System;
 using RPG_Template;
+using static UnityEngine.GraphicsBuffer;
+using System.Collections;
 
 namespace RPG_Template
 {
     public class BattleManager : MonoBehaviour
     {
-        
 
         List<Entity> entitiesEngaged;
 
         public void AttackMade(Entity attacker, List<Entity> targets, ActiveSkill skill)
         {
-            // TO DO: Calculate Damage with stats
-
             try
             {
                 // First, let's see who wants to interfere with the attacker
@@ -28,10 +27,7 @@ namespace RPG_Template
                     passives.AddRange(entity.GetIntruders(attacker, GlobalEvents.Attacking));
                 }
 
-
-
-
-                // Second, let's calculate the first effects and the damage
+                // Second, let's calculate the first effects
                 AttackInstance attack = new AttackInstance(skill);
 
                 // Each passive skill has special effects with special needs for parameters
@@ -39,8 +35,6 @@ namespace RPG_Template
                 {
                     ActivateSpecialEffectsForAttack(passiveSkill, attack);
                 }
-
-
 
 
                 // Third, let's see who wants to interfere with the defender
@@ -55,17 +49,51 @@ namespace RPG_Template
 
                     // Since the targets can individually interfere with the attack, its best to make a copy of it
                     AttackInstance newAttack = new AttackInstance(attack);
+
+                    // The attack may also have an effect of their own that we must consider
+                    foreach (SpecialEffect specialEffect in attack.specialEffects)
+                    {
+                        if (specialEffect.parameterNeeds == SpecialEffectNeeds.AttackInstance)
+                        {
+                            specialEffect.ActivateEffect(attack, null);
+                        }
+                    }
+
                     foreach (PassiveSkill passiveSkill in defenderPassives)
                     {
                         ActivateSpecialEffectsForAttack(passiveSkill, newAttack);
                     }
 
-                    // Attacks are then executed (finally)
+                    // Calculate Damage
+                    float dmgMultiplier = ApplyResistances(newAttack, target);
+                    float attackStat = GetRightStat(newAttack.statAttackerUsed, attacker);
+                    float defendStat = GetRightStat(newAttack.statDefenderUsed, target);
+                    newAttack.damage = CalculateDamageWithStat(newAttack.damage, attackStat, defendStat) * dmgMultiplier;
+
+                    // Now that the damage was calculated, we just need to send the damage to the entity
+                    if (attack.damage < 0)
+                    {
+                        target.healthSystem.Heal(attack.damage);
+                    }
+                    else
+                    {
+                        target.healthSystem.Damage(attack.damage);
+                    }
+
 
                     // Let's apply the Entity effects on the targets as we go
                     foreach (PassiveSkill passiveSkill in defenderPassives)
                     {
                         ActivateSpecialEffectsForEntities(passiveSkill, target);
+                    }
+
+                    // The attack may also have an effect of their own that we must consider
+                    foreach (SpecialEffect specialEffect in attack.specialEffects)
+                    {
+                        if (specialEffect.parameterNeeds == SpecialEffectNeeds.Target)
+                        {
+                            specialEffect.ActivateEffect(target, null);
+                        }
                     }
                 }
 
@@ -75,11 +103,20 @@ namespace RPG_Template
                 {
                     ActivateSpecialEffectsForEntities(passiveSkill, attacker);
                 }
+
+                foreach (SpecialEffect specialEffect in attack.specialEffects)
+                {
+                    if (specialEffect.parameterNeeds == SpecialEffectNeeds.Attacker)
+                    {
+                        specialEffect.ActivateEffect(attacker, null);
+                    }
+                }
             }
             // Attack was negated 
             catch (NegateAttackException nax)
             {
                 // In case of attack negated, nothing happens
+                Debug.Log(nax.Message);
             }
 
             
@@ -95,8 +132,7 @@ namespace RPG_Template
 
                 if (se.parameterNeeds == SpecialEffectNeeds.AttackInstance)
                 {
-                    se.ActivateEffect(attack);
-                    break;
+                    se.ActivateEffect(attack, null);
                 }
 
             }
@@ -106,16 +142,17 @@ namespace RPG_Template
         {
             foreach (SpecialEffect se in passiveSkill.specialEffects)
             {
-                if (se.parameterNeeds == SpecialEffectNeeds.Entity)
+                if (se.parameterNeeds == SpecialEffectNeeds.Target || se.parameterNeeds == SpecialEffectNeeds.Attacker)
                 {
-                    if (passiveSkill.numberOfTargets == NumberOfTargets.One) se.ActivateEffect(entity);
+                    // If the Skill has more than one target, we need to activate its effects to everyone in the team
+                    if (passiveSkill.numberOfTargets == NumberOfTargets.One) se.ActivateEffect(entity, null);
                     else
                     {
                         for (int i = 0; i <= entitiesEngaged.Count; i++)
                         {
                             if (entitiesEngaged[i].side == entity.side)
                             {
-                                se.ActivateEffect(entitiesEngaged[i]);
+                                se.ActivateEffect(entitiesEngaged[i], null);
                             }
                         }
                     }
@@ -124,12 +161,46 @@ namespace RPG_Template
             }
         }
 
-        private void ApplyAttack(AttackInstance attack, Entity target)
+        // Apply all necessary resistances to a multiplier and returns it
+        private float ApplyResistances(AttackInstance attack, Entity target)
         {
+            float dmgMultiplier = 1;
             foreach (DamageTypes damageType in attack.damageTypes)
             {
-                // TO DO: Calculate Damage with stats
+                // Get the resistances and add the multipliers
+                for(int i = 0;i <= target.typeResistances.Count;i++)
+                {
+                    if (target.typeResistances[i].type == damageType)
+                    {
+                        dmgMultiplier -= target.typeResistances[i].value;
+                        break;
+                    }
+                }
             }
+
+            return dmgMultiplier;
+        }
+
+        // Returns the stat value needed
+        private float GetRightStat(Stats statWanted, Entity entity)
+        {
+            for (int i = 0; i < entity.statList.Count; i++)
+            {
+                if (statWanted == entity.statList[i].name)
+                {
+                    return entity.statList[i].value;
+                }
+            }
+
+            throw new Exception("Stat required not found on entity" + entity.name + "!!!");
+        }
+
+        // Here you can use your formulas. The default here will be very simple, and you may want to change it
+        private float CalculateDamageWithStat(float damage, float attackStat, float defendStat)
+        {
+            damage *= attackStat / defendStat;
+
+            return damage;
         }
     }
 }

@@ -11,9 +11,20 @@ namespace RPG_Template
         public bool isMultiplier;
         public float duration;
 
-        public override void ActivateEffect(object target)
+        public override void ActivateEffect(object target, object checkCondition)
         {
-            throw new System.NotImplementedException();
+            if (target.GetType() != typeof(Entity))
+            {
+                throw new System.Exception("Trying to use StatBuff on non entity!!!");
+            }
+            target = (Entity)target;
+
+            if (hasCheckCondition)
+            {
+                
+            }
+
+
         }
     }
 }

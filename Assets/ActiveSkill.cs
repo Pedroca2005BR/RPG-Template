@@ -8,6 +8,7 @@ namespace RPG_Template
     {
         public List<DamageTypes> types;
         public Stats statUsed;
+        public Stats statDefenderUses;
 
         public float baseDamage;
         public float cooldown;

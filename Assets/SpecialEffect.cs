@@ -10,12 +10,16 @@ namespace RPG_Template
         public new string name;
         public SpecialEffectNeeds parameterNeeds;
 
-        public abstract void ActivateEffect(object target);
+        public bool hasCheckCondition;
+        public SpecialEffectNeeds checkCondition;
+
+        public abstract void ActivateEffect(object target, object checkCondition);
     }
 
     public enum SpecialEffectNeeds
     {
-        Entity,
+        Attacker,
+        Target,
         AttackInstance,
         BattleManager
     }
